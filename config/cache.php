@@ -33,6 +33,10 @@ return [
 
     'stores' => [
 
+        "geocode" => [
+            'driver' => 'redis',
+            'connection' => 'geocode-cache',
+        ],
         'apc' => [
             'driver' => 'apc',
         ],
@@ -90,6 +94,10 @@ return [
 
         'octane' => [
             'driver' => 'octane',
+        ],
+        "geocode" => [
+            'driver' => 'redis',
+            'connection' => 'geocode-cache',
         ],
 
     ],

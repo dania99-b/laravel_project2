@@ -52,21 +52,18 @@ class ApiController extends Controller
         }
 
         return response()->json([
-            'success'=>'true',
+            'success'=>true,
             'token' => auth()->user()->createToken('API Token')->plainTextToken
         ]);
 
     }
 
 
-    public function logout($id,Request $request) {
-        Auth::user()git ->where('id', $id)->delete();
-
-// Get user who requested the logout
-        $user = request()->user(); //or Auth::user()
-// Revoke current user token
-        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
-
+    public function logout(Request $request) {
+        $request->user()->currentAccessToken()->delete();
+        return [
+            'message' => 'logged out'
+        ];
     }
    /* public function get(Request $request){
 

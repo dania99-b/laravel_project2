@@ -26,8 +26,12 @@ Route::post('/register',[\App\Http\Controllers\Api\ApiController::class,'registe
 Route::get('/get',[\App\Http\Controllers\Api\ApiController::class,'get'])->middleware('auth:api');;;
 Route::post('/add',[\App\Http\Controllers\Api\ApiController::class,'add']);
 Route::post('/login',[\App\Http\Controllers\Api\ApiController::class,'login']);
-Route::get('/logout/{id}',[\App\Http\Controllers\Api\ApiController::class,'logout']);
+Route::post('/logout', [\App\Http\Controllers\Api\ApiController::class, 'logout'])->middleware('auth:sanctum');
 Route::get('/bytoken', function() {
     return auth()->user();
 })->middleware('auth:sanctum');
+Route::post('/add_place',[\App\Http\Controllers\Api\PlaceController::class,'add_place']);
 
+Route::get('/get_place',[\App\Http\Controllers\Api\CountryController::class,'get_place_country']);
+Route::post('/add_country',[\App\Http\Controllers\Api\CountryController::class,'add_country']);
+Route::get('/get_all_country',[\App\Http\Controllers\Api\CountryController::class,'get_all_country']);
