@@ -11,7 +11,9 @@ class Country extends Model
 
         'country_id',
         'country_name',
-        'photo'
+        'photo',
+        'longtiude',
+        'latitude'
         ];
     public $timestamps = false;
     use HasFactory;

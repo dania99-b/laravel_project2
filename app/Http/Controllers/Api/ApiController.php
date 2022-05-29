@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use App\Models\doctor;
+use App\Models\Officer;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ApiController extends Controller
 {
@@ -64,7 +67,10 @@ class ApiController extends Controller
         return [
             'message' => 'logged out'
         ];
-    }
+
+
+
+
    /* public function get(Request $request){
 
         $doctors=User::get();
@@ -101,5 +107,49 @@ public function add(Request $request)
         ];
     }
     return response($array);*/
+}
+public function login_admin(Request $request)
+{
+
+    $request->validate([
+        'admin_email' => 'required|email',
+        'password' => 'required',
+    ]);
+
+    $admin = Admin::where('admin_email', $request->admin_email)->first();
+
+    if (!$admin || !Hash::check($request->password, $admin->password)||!Auth::guard('admin') ) {
+
+        return response(['error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
+    }
+
+    return response()->json([
+        'admin' => $admin,
+        'token' => $admin->createToken($request['admin_email'], ['admin'])->plainTextToken
+    ]);
+
+}
+
+
+    public function login_officer(Request $request)
+    {
+        $login=$request->validate([
+            'office_email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $officer = Officer::where('office_email', $request->office_email)->first();
+
+        if (!$officer || !Hash::check($request->password, $officer->password)||!Auth::guard('officer') ) {
+
+            return response(['error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
+        }
+
+        return response()->json([
+            'officer' => $officer,
+            'token' => $officer->createToken($request['office_email'], ['officer'])->plainTextToken
+        ]);
+
+    }
 }
 
