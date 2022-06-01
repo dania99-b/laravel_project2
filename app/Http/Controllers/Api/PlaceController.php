@@ -16,7 +16,9 @@ class PlaceController extends Controller
            'time_open'=>'max:20',
            'time_close'=>'max:20',
            'fees'=>'max:5000',
-           'location'=>'max:5000'
+           'langtiude'=>'max:5000',
+           'latitude'=>'max:5000'
+
        ]);
        $new_place=place::create(
            [
@@ -24,7 +26,8 @@ class PlaceController extends Controller
                'time_open'=>$variable['time_open'],
                'time_close'=>$variable['time_close'],
                'fees'=>$variable['fees'],
-               'location'=>$variable['location']
+               'langtiude'=>$variable['langtiude'],
+               'latitude'=>$variable['latitude'],
            ]
        );
 

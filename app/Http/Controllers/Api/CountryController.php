@@ -19,13 +19,12 @@ class CountryController
     {
         $variable = $request->validate([
             'country_name' => 'max:255',
-            'time_open' => 'max:20',
-            'time_close' => 'max:20',
-            'fees' => 'max:5000',
-            'location' => 'max:5000',
-             'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'langtiude' => 'max:5000',
+            'latitude' => 'max:5000',
+
         ]);
-  $upload=$request->file('photo')->store('appimages');
+        $upload=$request->file('photo')->move('appimages/',$request->file('photo')->getClientOriginalName());
 
 
         $new_country = \App\Models\Country::create(
@@ -68,7 +67,7 @@ class CountryController
     $all_country=\App\Models\Country::all();
 
      foreach ($all_country as $d){
-         $all_display[] =array('county name'=>$d->country_name ,'photo'=>$d->photo);
+         $all_display[] =array('county name'=>$d->country_name ,'photo'=>$d->photo,'langtiude'=>$d->langtiude,'latitude'=>$d->latitude);
 
     }
      return $all_display;}

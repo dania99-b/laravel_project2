@@ -33,17 +33,35 @@ Route::get('/bytoken', function() {
 Route::post('/add_place',[\App\Http\Controllers\Api\PlaceController::class,'add_place']);
 
 Route::get('/get_place',[\App\Http\Controllers\Api\CountryController::class,'get_place_country']);
-Route::post('/add_country',[\App\Http\Controllers\Api\CountryController::class,'add_country']);
+
 Route::get('/get_all_country',[\App\Http\Controllers\Api\CountryController::class,'get_all_country']);
-Route::post('/add_officer',[\App\Http\Controllers\Api\DashboardController::class,'register_officer']);
-Route::post('/add_admin',[\App\Http\Controllers\Api\DashboardController::class,'register_admin']);
+
+
 Route::group(['middleware' => ['auth:sanctum','ability:officer']], function() {
     Route::post('/login_officerr', [\App\Http\Controllers\Api\ApiController::class,'login_officer']);
 });
-Route::group(['middleware' => ['auth:sanctum','ability:admin']], function() {
-    Route::post('/login_adminn', [\App\Http\Controllers\Api\ApiController::class,'login_admin']);
+Route::group(['middleware' => ['auth:sanctum']], function() {
+
 });
 
   Route::post('/geocode', [\App\Http\Controllers\Api\CountryController::class,'getGeocodeData']);
 
   Route::put('/office', [\App\Http\Controllers\Api\CountryController::class,'update_offices']);
+Route::get('/check',[\App\Http\Controllers\Api\DashboardController::class,'check']);
+
+    Route::post('/login',[\App\Http\Controllers\Api\ApiController::class, 'loginn']);
+
+Route::group(['prefix' => 'admin', 'middleware' => ['auth:sanctum','role:admin']], function() {
+    Route::post('/add_admin', [\App\Http\Controllers\Api\DashboardController::class, 'register_admin']);
+    Route::post('/add_officer', [\App\Http\Controllers\Api\DashboardController::class, 'register_officer']);
+    Route::get('/get_users', [\App\Http\Controllers\Api\DashboardController::class, 'getall_user']);
+    Route::post('/add_country',[\App\Http\Controllers\Api\CountryController::class,'add_country']);
+});
+
+// /admin/add
+
+    /*Route::middleware('role:admin')
+        ->group(function(){
+            Route::post('/login_adminn', [\App\Http\Controllers\Api\ApiController::class,'loginn']);
+        });
+Route::get('/login_officerr', [\App\Http\Controllers\Api\ApiController::class,'getall_user']);*/

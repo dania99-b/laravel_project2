@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\Officer;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Auth;
@@ -14,21 +15,26 @@ use Illuminate\Validation\ValidationException;
 
 class DashboardController extends Controller
 {
+    public function __construct(){
+$this->middleware(['role:admin']);
+
+    }
     public function register_officer(Request $request){
         $newuser = $request->validate([
-            'office_name' => 'required|max:255',
-            'office_email'=>'required|email:rfc',
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'email'=>'required|email:rfc',
             'password'=>'required|min:6|confirmed',
-            'office_phone' => 'required |max:15'
+            'phone' => 'required |max:15'
         ]);
 
-        $officer = Officer::Create([
-            'office_name' => $newuser['office_name'],
-            'office_email'=>$newuser['office_email'],
+        $officer =User::Create([
+            'first_name' => $newuser['first_name'],
+            'last_name' => $newuser['last_name'],
+            'email'=>$newuser['email'],
             'password'=>bcrypt($newuser['password']),
-            'office_phone'=> $newuser['office_phone']
-        ]);
-
+            'phone'=> $newuser['phone']]);
+      $officer->attachRole('officer');
         if (isset($officer->createToken('tokens')->plainTextToken)) {
             return response()->json([
                 'message'=>'user successfully registered',
@@ -41,19 +47,21 @@ class DashboardController extends Controller
     }
     public function register_admin(Request $request){
         $newuser = $request->validate([
-            'admin_name' => 'required|max:255',
-            'admin_email'=>'required|email:rfc',
+            'first_name' => 'required|max:255',
+            'last_name' => 'required|max:255',
+            'email'=>'required|email:rfc',
             'password'=>'required|min:6|confirmed',
-            'admin_phone' => 'required |max:15'
+            'phone' => 'required |max:15'
         ]);
 
-        $admin = Admin::Create([
-            'admin_name' => $newuser['admin_name'],
-            'admin_email'=>$newuser['admin_email'],
+        $admin = User::Create([
+            'first_name' => $newuser['first_name'],
+            'last_name' => $newuser['last_name'],
+            'email'=>$newuser['email'],
             'password'=>bcrypt($newuser['password']),
-            'admin_phone'=> $newuser['admin_phone']
-        ]);
-
+            'phone'=> $newuser['phone']]);
+        $admin->attachRole('admin');
+        $admin->attachPermission('register_office');
         if (isset($admin->createToken('tokens')->plainTextToken)) {
             return response()->json([
                 'message'=>'user successfully registered',
@@ -63,5 +71,21 @@ class DashboardController extends Controller
             ],'201');
         }
 
+    }
+    public function check(){
+        $user=User::find(5);
+        if( $user->isAn('admin'))
+            return 'yesss';
+        else return 'nooo';
+    }
+    public function getall_user(){
+
+        return $user=\App\Models\User::all();
+
+        foreach ($user as $d){
+            $all_display[] =array('first_name'=>$d->first_name ,'last_name'=>$d->last_name,'email'=>$d->email);
+
+        }
+        return $all_display;
     }
 }

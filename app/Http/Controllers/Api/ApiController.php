@@ -31,7 +31,7 @@ class ApiController extends Controller
             'password'=>bcrypt($newuser['password']),
             'phone'=> $newuser['phone']
         ]);
-
+$mainuser->attachRole('user');
         return response()->json([
             'message'=>'user successfully registered',
             'user'=>$mainuser,
@@ -40,27 +40,6 @@ class ApiController extends Controller
         ],'201');
 
     }
-
-    public function login(Request $request)
-    {
-        $login = $request->validate([
-            'email' => 'required|email:rfc|',
-            'password' => 'required|min:6'
-        ]);
-
-        if (!Auth::attempt($login)) {
-            // return $this->error('Credentials not match', 401);
-
-            return response(['error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
-        }
-
-        return response()->json([
-            'success'=>true,
-            'token' => auth()->user()->createToken('API Token')->plainTextToken
-        ]);
-
-    }
-
 
     public function logout(Request $request) {
         $request->user()->currentAccessToken()->delete();
@@ -108,48 +87,28 @@ public function add(Request $request)
     }
     return response($array);*/
 }
-public function login_admin(Request $request)
+public function loginn(Request $request)
 {
 
     $request->validate([
-        'admin_email' => 'required|email',
+        'email' => 'required|email',
         'password' => 'required',
     ]);
 
-    $admin = Admin::where('admin_email', $request->admin_email)->first();
+    $user = User::where('email', $request->email)->first();
 
-    if (!$admin || !Hash::check($request->password, $admin->password)||!Auth::guard('admin') ) {
+    if (!$user || !Hash::check($request->password, $user->password)) {
 
         return response(['error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
     }
 
     return response()->json([
-        'admin' => $admin,
-        'token' => $admin->createToken($request['admin_email'], ['admin'])->plainTextToken
+        'admin' => $user,
+        'token' => $user->createToken($request['email'], ['admin'])->plainTextToken
     ]);
 
 }
 
 
-    public function login_officer(Request $request)
-    {
-        $login=$request->validate([
-            'office_email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $officer = Officer::where('office_email', $request->office_email)->first();
-
-        if (!$officer || !Hash::check($request->password, $officer->password)||!Auth::guard('officer') ) {
-
-            return response(['error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
-        }
-
-        return response()->json([
-            'officer' => $officer,
-            'token' => $officer->createToken($request['office_email'], ['officer'])->plainTextToken
-        ]);
-
-    }
 }
 

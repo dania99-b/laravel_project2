@@ -9,9 +9,8 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Officer extends Model
 {
-use HasApiTokens, HasFactory, Notifiable;
+use HasApiTokens, HasFactory;
     protected $fillable=[
-
         'id',
         'office_name',
         'office_email',

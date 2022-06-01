@@ -7,14 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class place extends Model
 {
+    protected $table = 'places';
     use HasFactory;
     protected $fillable=[
         'place_name',
         'time_open',
         'time_close',
         'fees',
-        'location',
-        'country_id',
+        'langtiude',
+        'latitude'
 
     ];
     public $timestamps = false;

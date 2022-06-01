@@ -9,10 +9,10 @@ class Country extends Model
 {
     protected $fillable=[
 
-        'country_id',
+        'id',
         'country_name',
         'photo',
-        'longtiude',
+        'langtiude',
         'latitude'
         ];
     public $timestamps = false;
