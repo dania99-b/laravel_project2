@@ -14,10 +14,8 @@ return [
     | you may use many connections at once using the Database library.
     |
     */
-$DATABASE_URL=parse_url("postgres://kudbysftsgjpzc:f77fbd48274fac9ada491a7394d1c905de8c0b5b393209c5541f029c737b073c@ec2-3-211-221-185.compute-1.amazonaws.com:5432/dfbk625rf
-75fm6
-"),
-    'default' => env('DB_CONNECTION', 'pgsql'),
+
+    'default' => env('DB_CONNECTION', 'mysql'),
 
     /*
     |--------------------------------------------------------------------------
