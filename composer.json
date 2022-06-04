@@ -7,6 +7,8 @@
     "require": {
         "php": ">=7.0",
         "ext-json": "*",
+        "backpack/crud": "^5.0",
+        "doctrine/dbal": "^3.3",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.15",
@@ -17,6 +19,7 @@
         "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
+        "backpack/generators": "^3.1",
         "fakerphp/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",
         "mockery/mockery": "^1.4.4",

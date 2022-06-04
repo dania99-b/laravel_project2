@@ -99,12 +99,14 @@ public function loginn(Request $request)
 
     if (!$user || !Hash::check($request->password, $user->password)) {
 
-        return response(['error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
+        return response(['success'=>false,'error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
     }
 
     return response()->json([
-        'admin' => $user,
-        'token' => $user->createToken($request['email'], ['admin'])->plainTextToken
+        'success'=>true,
+        'user' => $user,
+        'token' => $user->createToken($request['email'], ['admin'])->plainTextToken,
+        'role' =>$user->roles()->first()->name
     ]);
 
 }

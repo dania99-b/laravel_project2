@@ -11,6 +11,7 @@ use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable
 {
+    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use LaratrustUserTrait;
     use HasApiTokens, HasFactory, Notifiable;
 

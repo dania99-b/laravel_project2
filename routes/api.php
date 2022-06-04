@@ -32,7 +32,7 @@ Route::get('/bytoken', function() {
 })->middleware('auth:sanctum');
 Route::post('/add_place',[\App\Http\Controllers\Api\PlaceController::class,'add_place']);
 
-Route::get('/get_place',[\App\Http\Controllers\Api\CountryController::class,'get_place_country']);
+Route::post('/get_place',[\App\Http\Controllers\Api\CountryController::class,'get_place_country']);
 
 Route::get('/get_all_country',[\App\Http\Controllers\Api\CountryController::class,'get_all_country']);
 
@@ -65,3 +65,4 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:sanctum','role:admin']
             Route::post('/login_adminn', [\App\Http\Controllers\Api\ApiController::class,'loginn']);
         });
 Route::get('/login_officerr', [\App\Http\Controllers\Api\ApiController::class,'getall_user']);*/
+Route::post('/add_place',[\App\Http\Controllers\Api\CountryController::class,'addplace_tocountry']);

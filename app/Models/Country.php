@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Country extends Model
 {
+    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     protected $fillable=[
-
         'id',
         'country_name',
         'photo',
@@ -18,6 +18,6 @@ class Country extends Model
     public $timestamps = false;
     use HasFactory;
     public function place(){
-        return $this->hasMany(place::class);
+        return $this->hasMany(Place::class);
     }
 }
