@@ -12,14 +12,14 @@ class PlaceController extends Controller
 {
    public function add_place(Request $request){
        $variable=$request->validate([
-           'place_name'=>'max:255|required',
-           'time_open'=>'max:20',
-           'time_close'=>'max:20',
-           'fees'=>'max:5000',
-           'location'=>'max:5000',
+           'place_name'=>'max:255|requireds',
+           'time_open'=>'max:20|date_format:H:i',
+           'time_close'=>'max:20|date_format:H:i|after:time_open',
+           'fees'=>'max:5000|regex:/(^[A-Za-z0-9 ]+$)+/',
+           'location'=>'max:5000|regex:/^[a-zA-Z]+$/u',
            'langtiude'=>'max:5000',
            'latitude'=>'max:5000',
-           'rate'=>'max:5000',
+           'rate'=>'max:5000|numeric',
            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
        ]);

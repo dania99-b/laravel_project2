@@ -15,11 +15,11 @@ class CountryController
     public function addplace_tocountry(Request $request){
         $variable = $request->validate([
             'place_name' => 'max:255|required',
-            'time_open'=>'max:255',
-            'time_close'=>'max:255',
-            'fees'=>'max:255',
+            'time_open'=>'date_format:H:i',
+            'time_close'=>'date_format:H:i|after:time_open',
+            'fees'=>'max:255|regex:/(^[A-Za-z0-9 ]+$)+/',
             'location'=>'max:255',
-            'rate'=>'max:10',
+            'rate'=>'max:10|numeric',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
 
@@ -79,7 +79,7 @@ class CountryController
     {
 
         $variable = $request->validate([
-            'country_name' => 'max:255|required',
+            'country_name' => 'max:255|required|regex:/^[a-zA-Z]+$/u',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'langtiude' => 'max:5000',
             'latitude' => 'max:5000',

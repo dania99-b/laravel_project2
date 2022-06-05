@@ -21,11 +21,11 @@ $this->middleware(['role:admin']);
     }
     public function register_officer(Request $request){
         $newuser = $request->validate([
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
+            'first_name' => 'required|max:255|regex:/^[a-zA-Z]+$/u',
+            'last_name' => 'required|max:255|regex:/^[a-zA-Z]+$/u',
             'email'=>'required|email:rfc',
             'password'=>'required|min:6|confirmed',
-            'phone' => 'required |max:15'
+            'phone' => 'required |max:15|numeric'
         ]);
 
         $officer =User::Create([
@@ -47,11 +47,11 @@ $this->middleware(['role:admin']);
     }
     public function register_admin(Request $request){
         $newuser = $request->validate([
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
+            'first_name' => 'required|max:255|regex:/^[a-zA-Z]+$/u',
+            'last_name' => 'required|max:255|regex:/^[a-zA-Z]+$/u',
             'email'=>'required|email:rfc',
             'password'=>'required|min:6|confirmed',
-            'phone' => 'required |max:15'
+            'phone' => 'required |max:15|numeric'
         ]);
 
         $admin = User::Create([
