@@ -11,7 +11,6 @@ use PhpParser\Node\Scalar\String_;
 
 class CountryController
     {
-
     public function addplace_tocountry(Request $request){
         $variable = $request->validate([
             'place_name' => 'max:255|required',
@@ -73,7 +72,6 @@ class CountryController
         $c=\App\Models\Country::find($id)->place()->get();
         return $c;
     }
-
 
     public function add_country(Request $request)
     {
@@ -177,6 +175,17 @@ if($request)
     return 'updated succesfully';
 else
     return 'failed';
+
+  }
+  public function get_country_name_id(){
+      $all_country=\App\Models\Country::all();
+
+      foreach ($all_country as $d){
+          $display[] =array('country_id'=>$d->id,'county name'=>$d->country_name );
+
+      }
+      return $display;
+
 
   }
 

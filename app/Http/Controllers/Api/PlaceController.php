@@ -21,7 +21,7 @@ class PlaceController extends Controller
            'latitude'=>'max:5000',
            'rate'=>'max:5000|numeric',
            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-
+           'place_price' => 'numeric',
        ]);
        $new_place=place::create(
            [
@@ -33,6 +33,7 @@ class PlaceController extends Controller
                'langtiude'=>$variable['langtiude'],
                'latitude'=>$variable['latitude'],
                'rate'=>$variable['rate'],
+               'place_price'=>$variable['place_price'],
            ]
        );
 

@@ -66,3 +66,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:sanctum','role:admin']
         });
 Route::get('/login_officerr', [\App\Http\Controllers\Api\ApiController::class,'getall_user']);*/
 Route::post('/add_place',[\App\Http\Controllers\Api\CountryController::class,'addplace_tocountry']);
+Route::group(['prefix' => 'officer', 'middleware' => ['auth:sanctum','role:officer']], function() {
+Route::post('/add_trip',[\App\Http\Controllers\Api\TripController::class,'add_trip']);});
+
+ Route::get('/get_trip_place',[\App\Http\Controllers\Api\TripController::class, 'get_trips_places']);
+Route::post('/get_specific_trip',[\App\Http\Controllers\Api\TripController::class, 'get_places_for_specific_trip']);
+Route::get('/get_country_name_id',[\App\Http\Controllers\Api\CountryController::class, 'get_country_name_id']);
+
+//Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum','role:user']], function() {
+   // Route::post('/get_specific_trip',[\App\Http\Controllers\Api\TripController::class, 'reservation']);

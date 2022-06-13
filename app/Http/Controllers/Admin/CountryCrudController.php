@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Api\CountryController;
 use App\Http\Requests\CountryRequest;
+use App\Models\Country;
+use App\Traits\functrait;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -12,8 +14,8 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class CountryCrudController extends CrudController
-{
+class CountryCrudController extends CrudController{
+    use functrait;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
@@ -64,20 +66,30 @@ class CountryCrudController extends CrudController
 
         CRUD::setValidation(CountryRequest::class);
 
-
-        CRUD::field('id');
         CRUD::field('country_name');
-        CRUD::field('photo');
-        CRUD::field('langtiude');
-        CRUD::field('latitude');
+        Country::creating(function ($entry) {
+            $emptyArray = [];
+            $emptyArray = $this->getGeocodeData($entry->country_name);
+            $entry->langtiude = $emptyArray[0];
+            $entry->latitude = $emptyArray[1];
+        });
+        // image
+        $this->crud->addField([
+            'name' => 'photo',
+            'label' => 'photo',
+            'type' => 'upload',
+            'upload' => true,
+            'disk' => 'uploads'
+        ]);
 
-        /**
-         * Fields can be defined using the fluent syntax or array syntax:
-         * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-         */
+
+            /**
+             * Fields can be defined using the fluent syntax or array syntax:
+             * - CRUD::field('price')->type('number');
+             * - CRUD::addField(['name' => 'price', 'type' => 'number']));
+             */
+
     }
-
     /**
      * Define what happens when the Update operation is loaded.
      *

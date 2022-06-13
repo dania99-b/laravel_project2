@@ -14,6 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('vendor/laratrust/panel/roles-assignment/edit');
+    return view('welcome');
 });
 

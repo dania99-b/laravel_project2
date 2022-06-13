@@ -19,11 +19,16 @@ class Place extends Model
         'langtiude',
         'latitude',
         'rate',
-        'photo'
+        'photo',
+        'place_price'
 
     ];
     public $timestamps = false;
 public function country(){
     $this->belongsTo(Country::class);
 }
+    public function trips()
+    {
+        return $this->belongsToMany(Trip::class,'trip_place');
+    }
 }

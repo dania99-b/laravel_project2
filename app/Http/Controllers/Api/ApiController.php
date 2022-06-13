@@ -101,12 +101,13 @@ public function loginn(Request $request)
 
         return response(['success'=>false,'error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
     }
-
+    auth()->login($user);
     return response()->json([
         'success'=>true,
         'user' => $user,
         'token' => $user->createToken($request['email'], ['admin'])->plainTextToken,
-        'role' =>$user->roles()->first()->name
+        'role' =>$user->roles()->first()->name,
+
     ]);
 
 }
