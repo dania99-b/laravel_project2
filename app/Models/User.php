@@ -25,8 +25,9 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-        'phone'
-    ];
+        'phone',
+'        user_id'
+  ];
     public $timestamps = false;
     /**
      * The attributes that should be hidden for serialization.
@@ -54,6 +55,6 @@ class User extends Authenticatable
 
 
     public function tripuser(){
-        return $this->belongsToMany(Trip::class, 'trip_user')->where('role', 'user');
+        return $this->belongsToMany(Trip::class, 'trip_user')->where('role', 'user')->withPivot( ['reservation_date','part_money','passenger_number']);
     }
 }

@@ -75,3 +75,6 @@ Route::get('/get_country_name_id',[\App\Http\Controllers\Api\CountryController::
 
 //Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum','role:user']], function() {
    // Route::post('/get_specific_trip',[\App\Http\Controllers\Api\TripController::class, 'reservation']);
+Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum','role:user']], function() {
+Route::post('/add_reservation',[\App\Http\Controllers\Api\TripController::class, 'add_reservation']);});
+Route::get('/delete',[\App\Http\Controllers\Api\TripController::class, 'do']);

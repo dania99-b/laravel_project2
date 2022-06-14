@@ -20,11 +20,12 @@ class CountryController
             'location'=>'max:255',
             'rate'=>'max:10|numeric',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'place_price' => 'numeric',
 
 
         ]);
         $upload=$request->file('photo')->move('appimages/',$request->file('photo')->getClientOriginalName());
-        $country = \App\Models\Country::where('country_name', $request['country_name'])->first()->id;
+        $country_id=$request ['id'];
         $place= new Place();
         $place->place_name = $variable['place_name'];
         $place->time_open = $request['time_open'];
@@ -32,7 +33,8 @@ class CountryController
         $place->fees = $request['fees'];
         $place->location = $request['location'];
         $place->rate = $request['rate'];
-        $place->country_id=$country;
+        $place->place_price = $request['place_price'];
+        $place->country_id=$country_id;
         $place->photo = $upload;
 
         $storename=$place['place_name'];
