@@ -101,7 +101,7 @@ class TripController extends Controller
 
      //   trip_user::where('part_money', null)->where('created_at', '<', Carbon::now()->subMinute(2))->delete();
 
-     //   $d = $trip->places()->whereIN('place_id', $places_id)->get()->pluck('place_name');
+       $d = $trip->places()->whereIN('place_id', $places_id)->get()->pluck('place_name');
 
     }
     public function search(Request $request) {
