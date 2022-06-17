@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Models\reserv_places;
+use App\Models\trip_user;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class delete_reservation extends Command
@@ -27,6 +30,11 @@ class delete_reservation extends Command
      */
     public function handle()
     {
-        return 0;
+        $trip_user=trip_user::where('part_money', null)->where('reservation_date', '<=', Carbon::now()->subDays(3))->get();
+        foreach ($trip_user as $r){
+            $r->delete();
+            $r->places()->detach();
+       ;}
+
     }
 }

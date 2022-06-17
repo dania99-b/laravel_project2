@@ -21,7 +21,8 @@ class Trip extends Model
         'price',
         'note',
         'available_num_passenger',
-        'user_id'];
+        'user_id',
+        'trip_user_id'];
 
     public $timestamps = false;
 
@@ -32,7 +33,7 @@ public function places()
 
 
     public function scopeUser(){
-        return $this->belongsToMany(User::class)->withPivot( 'reservation_date','part_money','passenger_number');
+        return $this->belongsToMany(User::class, 'trip_user')->withPivot( 'reservation_date','part_money','passenger_number');
     }
 
     public function scopeOfficer()

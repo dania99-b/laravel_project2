@@ -77,4 +77,9 @@ Route::get('/get_country_name_id',[\App\Http\Controllers\Api\CountryController::
    // Route::post('/get_specific_trip',[\App\Http\Controllers\Api\TripController::class, 'reservation']);
 Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum','role:user']], function() {
 Route::post('/add_reservation',[\App\Http\Controllers\Api\TripController::class, 'add_reservation']);});
-Route::get('/delete',[\App\Http\Controllers\Api\TripController::class, 'do']);
+Route::get('/delete',[\App\Http\Controllers\Api\TripController::class, 'delete']);
+Route::post('/place_autocomplete',[\App\Http\Controllers\Api\SearchController::class, 'place_search']);
+Route::post('/trip_autocomplete',[\App\Http\Controllers\Api\SearchController::class, 'trip_search']);
+Route::post('/country_place_autocomplete',[\App\Http\Controllers\Api\SearchController::class, 'country_place_search']);
+Route::group([ 'middleware' => ['auth:sanctum']], function() {
+Route::get('/logged_info',[\App\Http\Controllers\Api\ApiController::class, 'get_login_user_info']);});

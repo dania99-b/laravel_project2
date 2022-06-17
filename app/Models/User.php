@@ -23,10 +23,12 @@ class User extends Authenticatable
     protected $fillable = [
         'first_name',
         'last_name',
+        'photo',
         'email',
         'password',
         'phone',
-'        user_id'
+'        user_id',
+        'gender'
   ];
     public $timestamps = false;
     /**
@@ -54,7 +56,8 @@ class User extends Authenticatable
         }
 
 
-    public function tripuser(){
-        return $this->belongsToMany(Trip::class, 'trip_user')->where('role', 'user')->withPivot( ['reservation_date','part_money','passenger_number']);
+    public function tripmany(){
+
+        return $this->belongsToMany(Trip::class,'trip_user')->where('role', 'user');
     }
 }

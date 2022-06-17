@@ -20,7 +20,8 @@ class Place extends Model
         'latitude',
         'rate',
         'photo',
-        'place_price'
+        'place_price',
+        'trip_user_id'
 
     ];
     public $timestamps = false;
@@ -30,5 +31,8 @@ public function country(){
     public function trips()
     {
         return $this->belongsToMany(Trip::class,'trip_place');
+    }
+    public function trip_user(){
+        return $this->belongsToMany(trip_user::class,'reserv_places');
     }
 }

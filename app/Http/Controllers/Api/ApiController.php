@@ -21,15 +21,19 @@ class ApiController extends Controller
             'last_name' => 'required|max:255|regex:/^[a-zA-Z]+$/u',
             'email'=>'required|email:rfc',
             'password'=>'required|min:6|confirmed',
-            'phone' => 'required |max:15'
+            'phone' => 'required |max:15',
+            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'gender' => 'regex:/^[a-zA-Z]+$/u'
         ]);
-
+        $upload=$request->file('photo')->move('appimages/',$request->file('photo')->getClientOriginalName());
     $mainuser = User::create([
             'first_name' => $newuser['first_name'],
             'last_name' => $newuser['last_name'],
             'email'=>$newuser['email'],
             'password'=>bcrypt($newuser['password']),
-            'phone'=> $newuser['phone']
+            'phone'=> $newuser['phone'],
+        'photo' => $upload,
+        'gender' => $newuser['gender']
         ]);
 $mainuser->attachRole('user');
         return response()->json([
@@ -111,7 +115,11 @@ public function loginn(Request $request)
     ]);
 
 }
+public function get_login_user_info(){
+    $user= \Auth::user();
+return $user;
 
+}
 
 }
 
