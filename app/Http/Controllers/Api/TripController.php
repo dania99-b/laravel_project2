@@ -57,7 +57,7 @@ class TripController extends Controller
 
         $all_trip = Trip::all();
         foreach ($all_trip as $d) {
-            $trips[] = array('trip_name' => $d->trip_name, 'photo' => $d->photo, 'trip_start' => $d->trip_start, 'trip_end' => $d->trip_end, 'duration' => $d->duration, 'trip_plane' => $d->trip_plane, 'trip_status' => $d->trip_status, 'price' => $d->price, 'note' => $d->note, 'available_num_passenger' => $d->available_num_passenger, 'places' => $d->places()->get());
+            $trips[] = array('trip_id' => $d->id,'trip_name' => $d->trip_name, 'photo' => $d->photo, 'trip_start' => $d->trip_start, 'trip_end' => $d->trip_end, 'duration' => $d->duration, 'trip_plane' => $d->trip_plane, 'trip_status' => $d->trip_status, 'price' => $d->price, 'note' => $d->note, 'available_num_passenger' => $d->available_num_passenger, 'places' => $d->places()->get());
 
 
         }

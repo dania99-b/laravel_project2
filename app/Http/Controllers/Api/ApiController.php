@@ -116,7 +116,7 @@ public function loginn(Request $request)
 
 }
 public function get_login_user_info(){
-    $user= \Auth::user();
+        $user= \Auth::user();
 return $user;
 
 }
