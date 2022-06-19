@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use \App\Http\Controllers\Api\TripController;
+use App\Http\Controllers\Api\ApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -76,10 +77,21 @@ Route::get('/get_country_name_id',[\App\Http\Controllers\Api\CountryController::
 //Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum','role:user']], function() {
    // Route::post('/get_specific_trip',[\App\Http\Controllers\Api\TripController::class, 'reservation']);
 Route::group(['prefix' => 'user', 'middleware' => ['auth:sanctum','role:user']], function() {
-Route::post('/add_reservation',[\App\Http\Controllers\Api\TripController::class, 'add_reservation']);});
+Route::post('/add_reservation',[\App\Http\Controllers\Api\TripController::class, 'add_reservation']);
+Route::post('/edit_userinfo',[\App\Http\Controllers\Api\ApiController::class, 'profileedit']);
+Route::post('/changepassword',[\App\Http\Controllers\Api\ApiController::class, 'ChangePassword']);
+Route::post('/show_user_reservation',[\App\Http\Controllers\Api\TripController::class, 'show_user_reservation']);
+    Route::post('/cancelled_reservation',[\App\Http\Controllers\Api\TripController::class, 'cancelled_reservation']);});
+
+
+
 Route::get('/delete',[\App\Http\Controllers\Api\TripController::class, 'delete']);
 Route::post('/place_autocomplete',[\App\Http\Controllers\Api\SearchController::class, 'place_search']);
 Route::post('/trip_autocomplete',[\App\Http\Controllers\Api\SearchController::class, 'trip_search']);
 Route::post('/country_place_autocomplete',[\App\Http\Controllers\Api\SearchController::class, 'country_place_search']);
 Route::group([ 'middleware' => ['auth:sanctum']], function() {
-Route::get('/logged_info',[\App\Http\Controllers\Api\ApiController::class, 'get_login_user_info']);});
+Route::get('/logged_info',[ApiController::class, 'get_login_user_info']);});
+
+
+
+

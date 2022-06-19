@@ -13,10 +13,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+
 class TripController extends Controller
 {
     public function add_trip(Request $request)
     {
+
         $request->validate([
             'trip_name' => 'max:255|required',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -27,7 +29,9 @@ class TripController extends Controller
             'trip_status' => 'max:5000',
             'price' => 'required|max:5000|regex:/^\d*(\.\d{2})?$/',
             'note' => 'max:5000',
-            'available_num_passenger' => 'numeric'
+            'available_num_passenger' => 'numeric',
+            'total_trip_price' => 'numeric',
+            'discounts' => 'numeric'
         ]);
         $upload = $request->file('photo')->move('storage/appimages/', $request->file('photo')->getClientOriginalName());
         $new_trip = Trip::create([
@@ -41,15 +45,20 @@ class TripController extends Controller
             'trip_status' => $request['trip_status'],
             'price' => $request['price'],
             'note' => $request['note'],
+            'total_trip_price' => $request['total_trip_price'],
             'available_num_passenger' => $request['available_num_passenger'],
+            'discounts' => $request['discounts'],
             'user_id' => Auth::id()
 
         ]);
-
-        $id = $request->input('id');
-
+        $trip_id = Trip::where('trip_name', $request['trip_name'])->get()->pluck('id');
+        $id = $request->input('place_id');
+        $prices = $request['place_trip_price'];
         $c = \App\Models\Place::whereIn('id', $id)->get();
-        $new_trip->places()->attach($c);
+        for ($ii = 0; $ii < count($c); $ii++) {
+            $new_trip->places()->attach($c[$ii], ['place_trip_price' => $prices[$ii]]);
+        }
+
     }
 
     public function get_trips_places()
@@ -57,7 +66,7 @@ class TripController extends Controller
 
         $all_trip = Trip::all();
         foreach ($all_trip as $d) {
-            $trips[] = array('trip_id' => $d->id,'trip_name' => $d->trip_name, 'photo' => $d->photo, 'trip_start' => $d->trip_start, 'trip_end' => $d->trip_end, 'duration' => $d->duration, 'trip_plane' => $d->trip_plane, 'trip_status' => $d->trip_status, 'price' => $d->price, 'note' => $d->note, 'available_num_passenger' => $d->available_num_passenger, 'places' => $d->places()->get());
+            $trips[] = array('trip_id' => $d->id, 'trip_name' => $d->trip_name, 'photo' => $d->photo, 'trip_start' => $d->trip_start, 'trip_end' => $d->trip_end, 'duration' => $d->duration, 'trip_plane' => $d->trip_plane, 'trip_status' => $d->trip_status, 'price' => $d->price, 'note' => $d->note, 'available_num_passenger' => $d->available_num_passenger, 'places' => $d->places()->get());
 
 
         }
@@ -74,53 +83,66 @@ class TripController extends Controller
 
     public function add_reservation(Request $request)
     {
+        $trip_non_chose = 0.0;
         $user = auth()->user()->id;
         $confirm_button = $request['confirm_button'];
         $trip_id = $request['trip_id'];
         $passenger_number = $request['passenger_number'];
         $reservation_date = now()->format('Y-m-d');
         $places_id = $request->input('places_id');
-        $part_money = $request['part_money'];
-
-        auth()->user()->tripmany()->attach($trip_id, ['passenger_number' => $passenger_number, 'reservation_date' => $reservation_date, 'part_money' => $part_money]);
-
-        $db = DB::table('trip_user')->latest()->first();
-
+        $total_money = $request['total_money'];
         $trip = Trip::find($trip_id);
-        $trip_user = new Trip_user();
+        // dd($trip->discounts);
+        if ($trip->available_num_passenger - $passenger_number >= 0) {
 
-        $trip_user = Trip_user::find($db->id);
 
-        foreach ($places_id as $ids) {
-            $trip_user->places()->attach(['place_id' => $ids]);
+            auth()->user()->tripmany()->attach($trip_id, ['passenger_number' => $passenger_number, 'reservation_date' => $reservation_date, 'total_money' => $total_money]);
 
-        }
-        if ($confirm_button == 'yes') {
+            $db = DB::table('trip_user')->latest()->first();
+
+            $trip_user = new Trip_user();
+            $trip_price = $trip->total_trip_price;
+            $trip_user = Trip_user::find($db->id);
+/////////count price of none choosen country
+            $result = 0.0;
+            if ($trip->places()->whereNotIn('place_id', $places_id)->first(['place_trip_price']) == null) {
+
+                $trip_user->reservation_price = $passenger_number * ($trip->total_trip_price - ($trip->total_trip_price * $trip->discounts));
+                $trip_user->save();
+            } else {
+
+                $all_places_no_choosen[] = $trip->places()->whereNotIn('place_id', $places_id)->first(['place_trip_price'])->place_trip_price;
+
+                for ($i = 0; $i < count($all_places_no_choosen); $i++)
+                    $result = $result + $all_places_no_choosen[$i];
+                $reservation_price = $trip->total_trip_price - $result;
+                $trip_user->reservation_price = $passenger_number * ($reservation_price - ($reservation_price * $trip->discounts));
+                $trip_user->save();
+            }
+
+            foreach ($places_id as $ids) {
+                $trip_user->places()->attach(['place_id' => $ids,]);
+
+            }
             Trip::where('id', $trip_id)->decrement('available_num_passenger', $passenger_number);
-        }
-
-     //   trip_user::where('part_money', null)->where('created_at', '<', Carbon::now()->subMinute(2))->delete();
-
-       $d = $trip->places()->whereIN('place_id', $places_id)->get()->pluck('place_name');
+        } else return "entered passenger_number larger than the total trip passenger";
 
     }
-    public function search(Request $request) {
-        $data = User::with('instruments')
-            ->where('user_type', 'teacher')
-            ->orWhere('fname', 'like', '%' . $request->term . '%' )
-            ->orWhere('fname', 'like', $request->term . '%' )
-            ->orWhere('lname', 'like', '% ' . $request->term . '%' )
-            ->orWhere('lname', 'like', $request->term . '%' )
-            ->orWhere('email', 'like', '% ' . $request->term . '%' )
-            ->orWhere('email', 'like', $request->term . '%' )
-            ->orWhere('profession', 'like', '%' . $request->term . '%' )
-            ->orWhere('profession', 'like', $request->term . '%' )
-            ->limit(10)
-            ->get();
 
-        return response()->json($data);
+    public function show_user_reservation()
+    {
+        $user_id = auth()->user()->id;
+        return trip_user::where('user_id', $user_id)->get();
     }
 
+    public function cancelled_reservation(Request $request)
+    {
+        $reservation = $request['selected reserv'];
+        $user_id = auth()->user()->id;
+       $deletd_reservation= trip_user::where('id', $reservation )->get();
+       dd($deletd_reservation);
+        $deletd_reservation->delete();
+        $deletd_reservation->places()->detach();
 
-
+    }
 }

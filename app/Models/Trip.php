@@ -22,13 +22,16 @@ class Trip extends Model
         'note',
         'available_num_passenger',
         'user_id',
-        'trip_user_id'];
+        'trip_user_id',
+        'total_trip_price',
+        'discounts',
+        'place_in_trip_price'];
 
     public $timestamps = false;
 
 public function places()
 {
-    return $this->belongsToMany(Place::class,'trip_place');
+    return $this->belongsToMany(Place::class,'trip_place')->withPivot('place_trip_price');
 }
 
 

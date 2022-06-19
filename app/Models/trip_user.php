@@ -14,12 +14,13 @@ protected  $fillable=[
     'trip_id',
     'user_id',
     'reservation_date',
-    'part_money',
+    'total_money',
     'passenger_number'
     ,'created_at',
     'updated_at',
     'id',
-    'reserv_places_id'
+    'reserv_places_id',
+    'reservation_price'
 
     ];
     public function places(){

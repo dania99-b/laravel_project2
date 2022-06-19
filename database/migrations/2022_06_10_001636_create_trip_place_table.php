@@ -18,6 +18,7 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('trip_id')->unsigned();
             $table->integer('place_id')->unsigned();
+
         });
     }
 

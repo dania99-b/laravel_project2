@@ -10,9 +10,12 @@ class reserv_places extends Model
 
     use HasFactory;
 
-    protected $table = "trip_user";
-    protected  $fillable=[
+    protected $table = "reserv_places";
+    protected  $fillable=
+        [
         'trip_user_id',
         'place_id',
-        'id'];
+        'id',
+        'reservation_price'
+        ];
 }

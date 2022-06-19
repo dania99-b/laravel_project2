@@ -21,7 +21,8 @@ class Place extends Model
         'rate',
         'photo',
         'place_price',
-        'trip_user_id'
+        'trip_user_id',
+        'place_in_trip_price'
 
     ];
     public $timestamps = false;
@@ -30,7 +31,7 @@ public function country(){
 }
     public function trips()
     {
-        return $this->belongsToMany(Trip::class,'trip_place');
+        return $this->belongsToMany(Trip::class,'trip_place')->withPivot('place_trip_price');
     }
     public function trip_user(){
         return $this->belongsToMany(trip_user::class,'reserv_places');
