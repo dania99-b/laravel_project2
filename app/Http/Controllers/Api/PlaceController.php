@@ -38,5 +38,17 @@ class PlaceController extends Controller
        );
 
 
-   }}
+   }
+    public function get_all_places(Request $request){
+        $all_places=\App\Models\Place::all();
+
+        foreach ($all_places as $d){
+            $all_display[] =array('id'=>$d->id ,'place_name'=>$d->place_name);
+
+        }
+        return $all_display;
+
+    }
+
+}
 

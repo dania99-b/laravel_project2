@@ -68,7 +68,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:sanctum','role:admin']
 Route::get('/login_officerr', [\App\Http\Controllers\Api\ApiController::class,'getall_user']);*/
 Route::post('/add_place',[\App\Http\Controllers\Api\CountryController::class,'addplace_tocountry']);
 Route::group(['prefix' => 'officer', 'middleware' => ['auth:sanctum','role:officer']], function() {
-Route::post('/add_trip',[\App\Http\Controllers\Api\TripController::class,'add_trip']);});
+Route::post('/add_trip',[\App\Http\Controllers\Api\TripController::class,'add_trip']);
+Route::get('/get_all_places',[\App\Http\Controllers\Api\PlaceController::class, 'get_all_places']);});
 
  Route::get('/get_trip_place',[\App\Http\Controllers\Api\TripController::class, 'get_trips_places']);
 Route::post('/get_specific_trip',[\App\Http\Controllers\Api\TripController::class, 'get_places_for_specific_trip']);
@@ -91,7 +92,6 @@ Route::post('/trip_autocomplete',[\App\Http\Controllers\Api\SearchController::cl
 Route::post('/country_place_autocomplete',[\App\Http\Controllers\Api\SearchController::class, 'country_place_search']);
 Route::group([ 'middleware' => ['auth:sanctum']], function() {
 Route::get('/logged_info',[ApiController::class, 'get_login_user_info']);});
-
 
 
 

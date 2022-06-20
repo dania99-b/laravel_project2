@@ -137,12 +137,13 @@ class TripController extends Controller
 
     public function cancelled_reservation(Request $request)
     {
-        $reservation = $request['selected reserv'];
+        $reservation = $request['selected_reserv'];
         $user_id = auth()->user()->id;
-       $deletd_reservation= trip_user::where('id', $reservation )->get();
-       dd($deletd_reservation);
+       $deletd_reservation= trip_user::where('id', $request['selected_reserv']);
+        $deletd_details=reserv_places::where('trip_user_id', $request['selected_reserv']);
+       // dd(  $deletd_details);
         $deletd_reservation->delete();
-        $deletd_reservation->places()->detach();
+        $deletd_details->delete();
 
     }
 }
