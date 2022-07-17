@@ -27,8 +27,11 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-'        user_id',
-        'gender'
+'        id',
+        'gender',
+        'numreports',
+        'blocked',
+        'device_token'
   ];
     public $timestamps = false;
     /**
@@ -59,5 +62,9 @@ class User extends Authenticatable
     public function tripmany(){
 
         return $this->belongsToMany(Trip::class,'trip_user')->where('role', 'user');
+    }
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class,'user_notification');
     }
 }

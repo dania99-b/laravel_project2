@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('trip_user', function (Blueprint $table) {
-            $table->double('part_money')->nullable();
+            $table->double('total_money')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('trip_user', function (Blueprint $table) {
-            $table->dropColumn(['part_money']);
+            $table->dropColumn(['total_money']);
         });
     }
 };

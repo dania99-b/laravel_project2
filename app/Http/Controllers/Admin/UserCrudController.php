@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\UserRequest;
+use App\Models\User;
+use App\Traits\functrait;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
@@ -13,6 +15,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
  */
 class UserCrudController extends CrudController
 {
+    use functrait;
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
@@ -44,6 +47,10 @@ class UserCrudController extends CrudController
         CRUD::column('email');
         CRUD::column('phone');
         CRUD::column('roles');
+        CRUD::column('photo');
+        CRUD::column('gender');
+        CRUD::column('numreports');
+        CRUD::column('blocked');
 
 
         /**
@@ -61,6 +68,12 @@ class UserCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
+        User::creating(function ($entry){
+           $pass= $this->bcry_pass($entry->password);
+            $entry->password=$pass;
+        });
+
+
         CRUD::setValidation(UserRequest::class);
 
         CRUD::field('first_name');
@@ -69,6 +82,14 @@ class UserCrudController extends CrudController
         CRUD::field('password');
         CRUD::field('phone');
         CRUD::field('roles');
+        $this->crud->addField([
+            'name' => 'photo',
+            'label' => 'photo',
+            'type' => 'upload',
+            'upload' => true,
+            'disk' => 'uploads'
+        ]);
+        CRUD::field('gender');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

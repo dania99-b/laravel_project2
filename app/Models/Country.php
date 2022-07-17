@@ -33,7 +33,7 @@ class Country extends Model
     }
 
 
-    public function setphotoAttribute($value)
+  /*  public function setphotoAttribute($value)
     {
         $attribute_name = "photo";
         // you can check here if file is recieved or not using hasFile()
@@ -43,6 +43,6 @@ class Country extends Model
         \Storage::disk('public')->put('file.png',file_get_contents($value->getRealPath()));
 
         $this->uploadFileToDisk($value, $attribute_name, $disk, $destination_path);
-    }
+    }*/
 // ..
 }

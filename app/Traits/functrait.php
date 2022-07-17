@@ -56,6 +56,10 @@ public function upload_photo(File $photo){
 
     }
 
+    function bcry_pass(String $password){
+        return bcrypt($password);
+   }
+
 
 
 

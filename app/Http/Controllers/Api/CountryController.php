@@ -2,10 +2,9 @@
 
 
 namespace App\Http\Controllers\Api;
-
+use App\Models\Country;
 use App\Models\Officer;
 use App\Models\Place;
-use Geocoder\Model\Country;
 use Illuminate\Http\Request;
 use PhpParser\Node\Scalar\String_;
 
@@ -85,18 +84,16 @@ class CountryController
             'latitude' => 'max:5000',
 
         ]);
-        $upload = $request->file('photo')->move('appimages/', $request->file('photo')->getClientOriginalName());
 
 
-        $new_country = \App\Models\Country::create(
-            [
-                'country_name' => $variable['country_name'],
 
-                'photo' => $upload,
+        $new_country = new Country();
+        $upload=$request->file('photo')->move('appimages/',$request->file('photo')->getClientOriginalName());
+        $new_country->country_name = $variable['country_name'];
+        $new_country->photo = $upload;
+        $new_country->save();
 
-            ]
-        );
-        $storename = $variable['country_name'];
+        $storename = $new_country['country_name'];
         $address = urlencode($storename);
         $googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?address={$address}&key=AIzaSyD9PkTM1Pur3YzmO-v4VzS0r8ZZ0jRJTIU";
         $geocodeResponseData = file_get_contents($googleMapUrl);
@@ -122,6 +119,61 @@ class CountryController
 
         }
     }
+
+    public function edit_country(Request $request)
+    {
+        $country_id = $request['country_id'];
+        $country = Country::find($country_id);
+        if ($request->has('country_name')) {
+            $country->country_name = $request->country_name;
+            $country->save();
+
+            $storename = $country['country_name'];
+            $address = urlencode($storename);
+            $googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?address={$address}&key=AIzaSyD9PkTM1Pur3YzmO-v4VzS0r8ZZ0jRJTIU";
+            $geocodeResponseData = file_get_contents($googleMapUrl);
+            $responseData = json_decode($geocodeResponseData, true);
+            if ($responseData['status'] == 'OK') {
+                $latitude = isset($responseData['results'][0]['geometry']['location']['lat']) ? $responseData['results'][0]['geometry']['location']['lat'] : "";
+                $longitude = isset($responseData['results'][0]['geometry']['location']['lng']) ? $responseData['results'][0]['geometry']['location']['lng'] : "";
+                $formattedAddress = isset($responseData['results'][0]['formatted_address']) ? $responseData['results'][0]['formatted_address'] : "";
+                if ($latitude && $longitude && $formattedAddress) {
+                    $geocodeData = array();
+                    array_push(
+                        $geocodeData,
+                        $latitude,
+                        $longitude,
+                        $formattedAddress
+                    );
+                }
+                $country::find($country_id);
+                $country->langtiude = $geocodeData[0];
+                $country->latitude = $geocodeData[1];
+                $country->save();
+
+
+            }
+        }
+
+
+        if ($request->has('photo')) {
+            $upload = $request->file('photo')->move('appimages/', $request->file('photo')->getClientOriginalName());
+            $country->photo = $upload;
+        }
+        $country->update();
+
+        $data[] = [
+            'id' => $country->id,
+            'country_name' => $country->country_name,
+            'photo' => $country->photo,
+            'langtiude' => $country->langtiude,
+            'latitude' => $country->latitude,
+            'status' => 200,
+        ];
+        return response()->json($data);
+
+    }
+
 
     public function get_all_country()
     {

@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Trip extends Model
 {
+    use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
     protected $fillable=[
         'id',
-        'place_name',
         'trip_name',
         'photo',
         'trip_start',
@@ -18,7 +18,7 @@ class Trip extends Model
         'trip_end',
         'trip_plane',
         'trip_status',
-        'price',
+        'price_after_discount',
         'note',
         'available_num_passenger',
         'user_id',
@@ -36,7 +36,7 @@ public function places()
 
 
     public function scopeUser(){
-        return $this->belongsToMany(User::class, 'trip_user')->withPivot( 'reservation_date','part_money','passenger_number');
+        return $this->belongsToMany(User::class, 'trip_user')->withPivot( 'reservation_date','total_money','passenger_number');
     }
 
     public function scopeOfficer()

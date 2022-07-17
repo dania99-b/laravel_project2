@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Api\CountryController;
-use App\Http\Requests\CountryRequest;
-use App\Models\Country;
-use App\Traits\functrait;
+use App\Http\Requests\TripUserRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class CountryCrudController
+ * Class TripUserCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class CountryCrudController extends CrudController{
-    use functrait;
+class TripUserCrudController extends CrudController
+{
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
@@ -29,9 +26,11 @@ class CountryCrudController extends CrudController{
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\Country::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/country');
-        CRUD::setEntityNameStrings('country', 'countries');
+
+
+        CRUD::setModel(\App\Models\TripUser::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/trip-user');
+        CRUD::setEntityNameStrings('trip user', 'trip users');
     }
 
     /**
@@ -42,11 +41,15 @@ class CountryCrudController extends CrudController{
      */
     protected function setupListOperation()
     {
+
         CRUD::column('id');
-        CRUD::column('country_name');
-        CRUD::column('photo');
-        CRUD::column('langtiude');
-        CRUD::column('latitude');
+        CRUD::column('trip_id');
+        CRUD::column('user_id');
+        CRUD::column('passenger_number');
+        CRUD::column('total_money');
+        CRUD::column('created_at');
+        CRUD::column('updated_at');
+        CRUD::column('reservation_price');
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -63,36 +66,24 @@ class CountryCrudController extends CrudController{
      */
     protected function setupCreateOperation()
     {
+        CRUD::setValidation(TripUserRequest::class);
 
-        CRUD::setValidation(CountryRequest::class);
+        CRUD::field('id');
+        CRUD::field('trip_id');
+        CRUD::field('user_id');
+        CRUD::field('passenger_number');
+        CRUD::field('total_money');
+        CRUD::field('created_at');
+        CRUD::field('updated_at');
+        CRUD::field('reservation_price');
 
-        CRUD::field('country_name');
-        Country::creating(function ($entry) {
-            $emptyArray = [];
-            $emptyArray = $this->getGeocodeData($entry->country_name);
-            $entry->langtiude = $emptyArray[0];
-            $entry->latitude = $emptyArray[1];
-        });
-        // image
-        $this->crud->addField([
-            'name' => 'photo',
-            'label' => 'photo',
-            'type' => 'upload',
-            'upload' => true,
-            'disk' => 'uploads'
-        ]);
-        if(backpack_user()->hasRole('admin')){
-            $this->crud->denyAccess(['create']);
-        }
-
-
-            /**
-             * Fields can be defined using the fluent syntax or array syntax:
-             * - CRUD::field('price')->type('number');
-             * - CRUD::addField(['name' => 'price', 'type' => 'number']));
-             */
-
+        /**
+         * Fields can be defined using the fluent syntax or array syntax:
+         * - CRUD::field('price')->type('number');
+         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
+         */
     }
+
     /**
      * Define what happens when the Update operation is loaded.
      *

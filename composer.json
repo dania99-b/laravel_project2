@@ -17,7 +17,8 @@
         "santigarcor/laratrust": "^7.1",
         "spatie/laravel-permission": "^5.5",
         "toin0u/geocoder-laravel": "^4.5",
-        "tymon/jwt-auth": "^1.0"
+        "tymon/jwt-auth": "^1.0",
+        "ext-curl": "*"
     },
     "require-dev": {
         "backpack/generators": "^3.1",

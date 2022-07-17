@@ -28,9 +28,24 @@ class delete_reservation extends Command
      *
      * @return int
      */
+
+    protected function getArguments() {
+        return array();
+    }
+
+    public function fire()
+    {
+        $trip_user = trip_user::where('total_money', null)->where('created_at', '<=', Carbon::now()->subDays(3))->get();
+        foreach ($trip_user as $r) {
+            $r->delete();
+            $r->places()->detach();
+        }
+    }
+
+
     public function handle()
     {
-        $trip_user=trip_user::where('part_money', null)->where('reservation_date', '<=', Carbon::now()->subDays(3))->get();
+        $trip_user=trip_user::where('total_money', null)->where('created_at', '<=', Carbon::now()->subDays(3))->get();
         foreach ($trip_user as $r){
             $r->delete();
             $r->places()->detach();

@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use App\Models\doctor;
 use App\Models\Officer;
+use App\Models\Trip;
+use App\Models\trip_user;
+use App\Models\TripUser;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,23 +25,26 @@ class ApiController extends Controller
         $newuser = $request->validate([
             'first_name' => 'required|max:255|regex:/^[a-zA-Z]+$/u',
             'last_name' => 'required|max:255|regex:/^[a-zA-Z]+$/u',
-            'email' => 'required|email:rfc',
+            'email' => 'required|email:rfc|unique:users',
             'password' => 'required|min:6|confirmed',
             'phone' => 'required |max:15',
             'photo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'gender' => 'regex:/^[a-zA-Z]+$/u'
         ]);
         $upload = $request->file('photo')->move('appimages/', $request->file('photo')->getClientOriginalName());
-        $mainuser = User::create([
+        $mainuser = User::firstOrCreate([
             'first_name' => $newuser['first_name'],
             'last_name' => $newuser['last_name'],
             'email' => $newuser['email'],
             'password' => bcrypt($newuser['password']),
             'phone' => $newuser['phone'],
             'photo' => $upload,
-            'gender' => $newuser['gender']
+            'gender' => $newuser['gender'],
+
         ]);
         $mainuser->attachRole('user');
+
+
         return response()->json([
             'message' => 'user successfully registered',
             'user' => $mainuser,
@@ -107,6 +114,11 @@ class ApiController extends Controller
 
             return response(['success' => false, 'error' => 'Credentials not match'], 400)->header('Content-Type', 'application/json');
         }
+        if ($user->blocked==1){
+            return response(['success' => false, 'error' => 'blocked account'], 400)->header('Content-Type', 'application/json');
+
+        }
+        ///$request['device_token']
         auth()->login($user);
         return response()->json([
             'success' => true,
@@ -185,5 +197,39 @@ class ApiController extends Controller
            ],400);}
 
 
-}}
+}
+    public function report_office(Request $request)
+    {
+        $input=$request['id'];
+       $user= User::find($input);
+       $user->numreports=$user->numreports+1;
+        $user->save();
+        if($user->numreports>=20){
+            $user->blocked=true;
+        $user->save();
+        dd('blocked!!!');}
+
+    }
+    public function get_all_office(){
+        $value='officer';
+        $dd= User::with(['roles'])
+            ->whereHas('roles', function($q) use($value) {
+                $q->where('name', '=', $value);
+            })->get();
+      return $dd;
+
+}
+    public function get_user_reserv(){
+        $result[]=array();
+        $idd =\Auth::user()->id;
+        $dd= Trip::with(['scopeUser'])
+            ->whereHas('scopeUser', function($q) use($idd) {
+                $q->where('user_id', '=', $idd);})->get();
+            return response()->json($dd);
+
+
+    }
+
+
+}
 
